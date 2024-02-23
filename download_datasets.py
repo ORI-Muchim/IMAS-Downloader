@@ -17,7 +17,7 @@ chrome_options.add_argument('--ignore-certificate-errors')  # Ignore SSL certifi
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-download_path = './hiori'
+download_path = './assets'
 if not os.path.exists(download_path):
     os.makedirs(download_path)
 
