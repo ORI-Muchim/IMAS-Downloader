@@ -1,4 +1,4 @@
-# IM@S-Downloader
+# IMAS-Downloader
 
 ## `Python 3.8` later, `JAVA 11` and `Anaconda(Optional)` must be installed to operate.
 
@@ -20,13 +20,13 @@ conda activate imas
 3. **Clone this repository to your local machine:**
 
 ```sh
-git clone https://github.com/ORI-Muchim/IM-S-Downloader.git
+git clone https://github.com/ORI-Muchim/IMAS-Downloader.git
 ```
 
 4. **Navigate to the cloned directory:**
 
 ```sh
-cd IM@S-Downloader
+cd IMAS-Downloader
 ```
 
 5. **Install the necessary dependencies:**
