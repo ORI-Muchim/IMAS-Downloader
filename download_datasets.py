@@ -12,6 +12,8 @@ def convert_m4a_to_wav(m4a_path, wav_path):
         audio = AudioSegment.from_file(m4a_path, format="m4a")
         audio.export(wav_path, format="wav")
         print(f"Converted to WAV: {wav_path}")
+        os.remove(m4a_path)
+        print(f"Deleted original M4A file: {m4a_path}")
     except Exception as e:
         print(f"Error converting {m4a_path} to WAV: {e}")
 
