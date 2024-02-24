@@ -3,28 +3,32 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from browsermobproxy import Server
 from pydub import AudioSegment
+from mutagen.mp4 import MP4
 import os
 import requests
 import time
 
-def convert_audio(original_file_path, title="", target_format="wav", sample_rate=44100, channels=1):
+def convert_audio(original_file_path, download_path):
     try:
-        format = original_file_path.split('.')[-1]
-        audio = AudioSegment.from_file(original_file_path, format=format)
-        converted_audio = audio.set_frame_rate(sample_rate).set_channels(channels)
-        wav_path = original_file_path.rsplit('.', 1)[0] + '.' + target_format
+        audio = AudioSegment.from_file(original_file_path, format="m4a")
+        original_metadata = MP4(original_file_path)
 
+        title = original_metadata.tags.get('\xa9nam')
+        
         if title:
-            converted_audio.export(wav_path, format=target_format, tags={"title": title})
-            print(f"Converted to {target_format.upper()} with title '{title}': {wav_path}")
+            file_name = f"{title[0]}.wav"
         else:
-            converted_audio.export(wav_path, format=target_format)
-            print(f"Converted to {target_format.upper()}: {wav_path}")
+            file_name = os.path.splitext(os.path.basename(original_file_path))[0] + ".wav"
 
+        wav_path = os.path.join(download_path, file_name)
+
+        audio.export(wav_path, format="wav")
+        
+        print(f"Converted to WAV: {wav_path}")
         os.remove(original_file_path)
         print(f"Deleted original file: {original_file_path}")
     except Exception as e:
-        print(f"Error converting {original_file_path} to {target_format.upper()}: {e}")
+        print(f"Error converting {original_file_path}: {e}")
 
 bmp_path = 'C:\\browsermob-proxy\\bin\\browsermob-proxy'
 server = Server(bmp_path, options={'port': 8090})
@@ -68,7 +72,7 @@ try:
                     downloaded_files.append(file_url)
                     print(f'Downloaded: {audio_file_path}')
 
-                    convert_audio(audio_file_path)
+                    convert_audio(audio_file_path, download_path)
                 else:
                     print(f'Failed to download {file_name}. Status code: {response.status_code}')
             else:

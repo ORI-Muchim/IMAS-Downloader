@@ -3,3 +3,4 @@ webdriver_manager
 browsermobproxy
 requests
 pydub
+mutagen
