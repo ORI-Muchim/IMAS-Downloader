@@ -7,14 +7,16 @@ import os
 import requests
 import time
 
-def convert_audio(original_file_path, target_format="wav", sample_rate=44100, channels=1):
+def convert_audio(original_file_path, title, target_format="wav", sample_rate=44100, channels=1):
     try:
         format = original_file_path.split('.')[-1]
         audio = AudioSegment.from_file(original_file_path, format=format)
         converted_audio = audio.set_frame_rate(sample_rate).set_channels(channels)
         wav_path = original_file_path.rsplit('.', 1)[0] + '.' + target_format
-        converted_audio.export(wav_path, format=target_format)
-        print(f"Converted to {target_format.upper()}: {wav_path}")
+
+        converted_audio.export(wav_path, format=target_format, tags={"title": title})
+        print(f"Converted to {target_format.upper()} with title '{title}': {wav_path}")
+
         os.remove(original_file_path)
         print(f"Deleted original file: {original_file_path}")
     except Exception as e:
