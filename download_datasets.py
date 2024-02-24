@@ -2,9 +2,18 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from browsermobproxy import Server
+from pydub import AudioSegment
 import os
 import requests
 import time
+
+def convert_m4a_to_wav(m4a_path, wav_path):
+    try:
+        audio = AudioSegment.from_file(m4a_path, format="m4a")
+        audio.export(wav_path, format="wav")
+        print(f"Converted to WAV: {wav_path}")
+    except Exception as e:
+        print(f"Error converting {m4a_path} to WAV: {e}")
 
 bmp_path = 'C:\\browsermob-proxy\\bin\\browsermob-proxy'
 server = Server(bmp_path, options={'port': 8090})
@@ -35,20 +44,24 @@ try:
         
         for file_url in m4a_files:
             file_name = file_url.split('/')[-1].split('?')[0]
-            file_path = os.path.join(download_path, file_name)
+            m4a_file_path = os.path.join(download_path, file_name)
 
             if file_name not in downloaded_files:
                 response = requests.get(file_url, stream=True)
                 if response.status_code == 200:
-                    with open(file_path, 'wb') as f:
+                    with open(m4a_file_path, 'wb') as f:
                         for chunk in response.iter_content(1024):
                             f.write(chunk)
                     downloaded_files.append(file_url)
-                    print(f'Downloaded: {file_path}')
+                    print(f'Downloaded: {m4a_file_path}')
+
+                    wav_file_name = file_name.replace(".m4a", ".wav")
+                    wav_file_path = os.path.join(download_path, wav_file_name)
+                    convert_m4a_to_wav(m4a_file_path, wav_file_path)
                 else:
                     print(f'Failed to download {file_name}. Status code: {response.status_code}')
             else:
-                print(f'File already exists, skipping: {file_path}')
+                print(f'File already exists, skipping: {m4a_file_path}')
 except KeyboardInterrupt:
     print("Script interrupted by user. Exiting.")
 finally:
